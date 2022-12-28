@@ -63,7 +63,7 @@ app.put('/user/delete/:id', validator.params(paramsIDSchema), (req, res) => {
     res.json(`no user with id ${req.params.id}`);
   } else {
     users[index] = { ...users[index], isDeleted: true };
-    res.json(users[index]);
+    res.json(`user with id ${req.params.id} marked as deleted`);
   }
 });
 
@@ -78,8 +78,11 @@ app.get(
     if (!filteredUsers) {
       res.json(`no users mach the query: ${req.params.loginSubstring}`);
     } else {
-      const sortedUsers = filteredUsers.sort();
-      res.json(sortedUsers.splice(0, +req.params.limit));
+      const sortedUsers = filteredUsers.sort((a, b) =>
+        a.login > b.login ? 1 : -1
+      );
+      const restrictedUsers = sortedUsers.splice(0, +req.params.limit);
+      res.json(restrictedUsers);
     }
   }
 );
