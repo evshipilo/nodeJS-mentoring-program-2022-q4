@@ -5,8 +5,8 @@ export const paramsIDSchema = Joi.object({
 });
 
 export const paramsSubstringLimitSchema = Joi.object({
-  loginSubstring: Joi.string().alphanum().min(1).max(10).required(),
-  limit: Joi.number().min(1).required(),
+  login_substring: Joi.string().alphanum().min(1).max(10),
+  limit: Joi.number().min(1),
 });
 
 export const createUserBodySchema = Joi.object({

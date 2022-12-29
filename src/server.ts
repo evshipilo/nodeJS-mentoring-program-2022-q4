@@ -18,10 +18,10 @@ const users: User[] = [];
 app.use(bodyParser.json());
 app.use(express.json());
 
-// get all users
-app.get('/users', (req, res) => {
-  res.json(users);
-});
+// // get all users
+// app.get('/users', (req, res) => {
+//   res.json(users);
+// });
 
 // get user by ID
 app.get('/user/:id', validator.params(paramsIDSchema), (req, res) => {
@@ -57,7 +57,7 @@ app.put(
 );
 
 //delete user
-app.put('/user/delete/:id', validator.params(paramsIDSchema), (req, res) => {
+app.delete('/user/:id', validator.params(paramsIDSchema), (req, res) => {
   const index = users.findIndex((user) => user.id === req.params.id);
   if (index === -1) {
     res.json(`no user with id ${req.params.id}`);
@@ -68,23 +68,22 @@ app.put('/user/delete/:id', validator.params(paramsIDSchema), (req, res) => {
 });
 
 // filter users on limit
-app.get(
-  '/users/:loginSubstring/:limit',
-  validator.params(paramsSubstringLimitSchema),
-  (req, res) => {
-    const filteredUsers = users.filter((user) =>
-      user.login.includes(req.params.loginSubstring)
-    );
-    if (!filteredUsers) {
-      res.json(`no users mach the query: ${req.params.loginSubstring}`);
-    } else {
-      const sortedUsers = filteredUsers.sort((a, b) =>
-        a.login > b.login ? 1 : -1
-      );
-      const restrictedUsers = sortedUsers.splice(0, +req.params.limit);
-      res.json(restrictedUsers);
-    }
+app.get('/users', validator.query(paramsSubstringLimitSchema), (req, res) => {
+  const substring = req.query.login_substring as string;
+  const limit = req.query.limit;
+
+  let sortedUsers: User[] = [];
+  const filteredUsers = substring
+    ? users.filter((user) => user.login.includes(substring))
+    : users;
+
+  if (!filteredUsers.length) {
+    res.json(`no users mach the query: ${substring}`);
+  } else {
+    sortedUsers = filteredUsers.sort((a, b) => (a.login > b.login ? 1 : -1));
+    const restrictedUsers = limit ? sortedUsers.splice(0, +limit) : sortedUsers;
+    res.json(restrictedUsers);
   }
-);
+});
 
 app.listen(3000);
