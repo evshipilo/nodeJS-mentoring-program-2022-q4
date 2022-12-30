@@ -16,7 +16,6 @@ const validator = createValidator();
 const users: User[] = [];
 
 app.use(bodyParser.json());
-app.use(express.json());
 
 // // get all users
 // app.get('/users', (req, res) => {
@@ -27,9 +26,9 @@ app.use(express.json());
 app.get('/user/:id', validator.params(paramsIDSchema), (req, res) => {
   const filteredUsers = users.filter((user) => user.id === req.params.id);
   if (filteredUsers.length) {
-    res.json(filteredUsers);
+    res.status(200).json({ users: filteredUsers });
   } else {
-    res.json(`no user with id ${req.params.id}`);
+    res.status(404).json({ message: `no user with id ${req.params.id}` });
   }
 });
 
@@ -37,7 +36,7 @@ app.get('/user/:id', validator.params(paramsIDSchema), (req, res) => {
 app.post('/user', validator.body(createUserBodySchema), (req, res) => {
   const user = { ...req.body, id: randomUUID() };
   users.push(user);
-  res.json(user);
+  res.status(200).json({ created_user: user });
 });
 
 //update user
@@ -48,10 +47,10 @@ app.put(
   (req, res) => {
     const index = users.findIndex((user) => user.id === req.params.id);
     if (index === -1) {
-      res.json(`no user with id ${req.params.id}`);
+      res.status(404).json({ message: `no user with id ${req.params.id}` });
     } else {
       users[index] = { ...users[index], ...req.body };
-      res.json(users[index]);
+      res.status(200).json({ updated_user: users[index] });
     }
   }
 );
@@ -60,10 +59,12 @@ app.put(
 app.delete('/user/:id', validator.params(paramsIDSchema), (req, res) => {
   const index = users.findIndex((user) => user.id === req.params.id);
   if (index === -1) {
-    res.json(`no user with id ${req.params.id}`);
+    res.status(404).json({ message: `no user with id ${req.params.id}` });
   } else {
     users[index] = { ...users[index], isDeleted: true };
-    res.json(`user with id ${req.params.id} marked as deleted`);
+    res
+      .status(200)
+      .json({ message: `user with id ${req.params.id} marked as deleted` });
   }
 });
 
@@ -78,11 +79,11 @@ app.get('/users', validator.query(paramsSubstringLimitSchema), (req, res) => {
     : users;
 
   if (!filteredUsers.length) {
-    res.json(`no users mach the query: ${substring}`);
+    res.status(404).json({ message: `no users mach the query: ${substring}` });
   } else {
     sortedUsers = filteredUsers.sort((a, b) => (a.login > b.login ? 1 : -1));
     const restrictedUsers = limit ? sortedUsers.splice(0, +limit) : sortedUsers;
-    res.json(restrictedUsers);
+    res.status(200).json({ users: restrictedUsers });
   }
 });
 
