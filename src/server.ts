@@ -7,8 +7,8 @@ import {
   paramsIDSchema,
   paramsSubstringLimitSchema,
   updateUserBodySchema,
-} from './schemas';
-import type { User } from './types';
+} from './models/schemas';
+import type { User } from './models/types';
 
 const app = express();
 const validator = createValidator();
