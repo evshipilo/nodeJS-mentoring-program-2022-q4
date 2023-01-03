@@ -73,6 +73,10 @@ app.get('/users', validator.query(paramsSubstringLimitSchema), (req, res) => {
   const substring = req.query.login_substring as string;
   const limit = req.query.limit;
 
+  if (!users.length) {
+    res.status(404).json({ message: `no users` });
+  }
+
   let sortedUsers: User[] = [];
   const filteredUsers = substring
     ? users.filter((user) => user.login.includes(substring))
