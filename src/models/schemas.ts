@@ -18,7 +18,7 @@ export const createUserBodySchema = Joi.object({
     .max(15)
     .required(),
   age: Joi.number().min(4).max(130).required(),
-  isDeleted: Joi.boolean().required(),
+  is_deleted: Joi.boolean().required(),
 });
 
 export const updateUserBodySchema = Joi.object({
@@ -29,5 +29,5 @@ export const updateUserBodySchema = Joi.object({
     .min(8)
     .max(15),
   age: Joi.number().min(4).max(130),
-  isDeleted: Joi.boolean(),
+  is_deleted: Joi.boolean(),
 });
