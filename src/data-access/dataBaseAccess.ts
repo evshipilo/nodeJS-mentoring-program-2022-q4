@@ -8,13 +8,12 @@ const DBname = process.env.NAME || '';
 const DBpassword = process.env.DB_PASSWORD || '';
 const DBhost = process.env.DB_HOST;
 
-export default class DataBaseAccess{
-  public sequelize = new Sequelize(DBname, username, DBpassword, {
+export const sequelize = new Sequelize(DBname, username, DBpassword, {
     host: DBhost,
     dialect: 'postgres',
   });
 
-  public UserModel = this.sequelize.define(
+export const UserModel = sequelize.define(
     'user',
     {
       // Model attributes are defined here
@@ -39,4 +38,22 @@ export default class DataBaseAccess{
       timestamps: false,
     }
   );
-}
+
+  export const GroupModel = sequelize.define(
+    'group',
+    {
+      // Model attributes are defined here
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      permissions: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: false,
+      }
+    },
+    {
+      tableName: 'groups',
+      timestamps: false,
+    }
+  );

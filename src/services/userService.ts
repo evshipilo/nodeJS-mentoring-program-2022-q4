@@ -1,4 +1,3 @@
-import Model from 'sequelize/types/model';
 import createUser from '../data-access/createUser';
 import getUserById from '../data-access/getUserById';
 import getUsers from '../data-access/getUsers';

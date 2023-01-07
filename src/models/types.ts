@@ -13,3 +13,17 @@ export type UserUpdates = {
   age?: number;
   is_deleted?: boolean;
 }
+
+export type Group = {
+  id?: string;
+  name: string;
+  permissions: Array<Permission>;
+};
+
+export type GroupUpdates = {
+  id?: string;
+  name?: string;
+  permissions?: Array<Permission>;
+};
+
+export type Permission = 'READ' | 'WRITE' | 'DELETE' | 'SHARE' | 'UPLOAD_FILES'
