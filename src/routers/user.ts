@@ -1,16 +1,17 @@
 import express from 'express';
 import { UserService } from '../services/userService';
 import {
-  createUserBodyValidation,
-  paramsIdValidation,
-  updateUserBodyValidation,
-} from '../services/middlewares';
-import { User } from '../models/types';
+  userBodyValidatorOnCreate,
+  userBodyValidatorOnUpdate,
+  userParamsIdValidator,
+  userQuerySubstringLimitValidator,
+} from '../validation/validators';
+import { User } from '../types';
 
 const user = express.Router();
 const userService = new UserService();
 
-user.post('/user', createUserBodyValidation, async (req, res) => {
+user.post('/user', userBodyValidatorOnCreate, async (req, res) => {
   const user: User = { ...req.body };
   const result = await userService.createUser(user);
   if (result instanceof Error) {
@@ -20,7 +21,7 @@ user.post('/user', createUserBodyValidation, async (req, res) => {
   }
 });
 
-user.get('/user/:id', paramsIdValidation, async (req, res) => {
+user.get('/user/:id', userParamsIdValidator, async (req, res) => {
   const { id } = req.params;
   const result = await userService.getUserById(id);
   if (result instanceof Error) {
@@ -34,8 +35,8 @@ user.get('/user/:id', paramsIdValidation, async (req, res) => {
 
 user.put(
   '/user/:id',
-  updateUserBodyValidation,
-  paramsIdValidation,
+  userBodyValidatorOnUpdate,
+  userParamsIdValidator,
   async (req, res) => {
     const { id } = req.params;
     const result = await userService.updateUser(id, req.body);
@@ -49,7 +50,7 @@ user.put(
   }
 );
 
-user.delete('/user/:id', paramsIdValidation, async (req, res) => {
+user.delete('/user/:id', userParamsIdValidator, async (req, res) => {
   const { id } = req.params;
   const result = await userService.deleteUser(id);
   if (result instanceof Error) {
@@ -60,6 +61,19 @@ user.delete('/user/:id', paramsIdValidation, async (req, res) => {
           .status(200)
           .json({ message: `user with id ${id} marked as deleted` })
       : res.status(404).json({ message: `no users with id ${id}` });
+  }
+});
+
+user.get('/users', userQuerySubstringLimitValidator, async (req, res) => {
+  const substring = req.query.login_substring as string;
+  const limit = req.query.limit as string;
+
+  const result = await userService.getUsers(limit, substring);
+  
+  if (result instanceof Error) {
+    res.status(500).json({ message: result });
+  } else {
+    res.status(200).json({ users: result });
   }
 });
 

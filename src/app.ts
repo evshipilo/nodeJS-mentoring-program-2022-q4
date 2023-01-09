@@ -1,8 +1,8 @@
 import express from 'express';
+import "reflect-metadata";
 import cors from 'cors';
 import * as dotenv from 'dotenv'
-import user from './routes/user';
-import users from './routes/users';
+import user from './routers/user';
 const app = express();
 dotenv.config()
 
@@ -11,7 +11,7 @@ app.use(cors());
 // Transforms the raw string of req.body into json
 app.use(express.json());
 // Load API routes
-app.use(user, users);
+app.use(user);
 
 app.listen(process.env.PORT);
 
