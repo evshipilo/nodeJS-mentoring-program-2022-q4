@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
-import { User } from '../models/typeORMModels';
-import { UserUpdates } from '../types';
+import { Group, User } from '../models/typeORMModels';
+import { GroupUpdates, UserUpdates } from '../types';
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ export const AppDataSource = new DataSource({
   database: DBname,
   synchronize: true,
   logging: true,
-  entities: [User],
+  entities: [User, Group],
   subscribers: [],
   migrations: [],
 });
@@ -118,3 +118,113 @@ export async function updateUser(id: string, userUpdates: UserUpdates) {
     return error;
   }
 }
+
+export async function createGroup(newGroup: Group) {
+    try {
+      const res = await AppDataSource.transaction(
+        async (transactionalEntityManager) => {
+          const group = await transactionalEntityManager
+            .getRepository(Group)
+            .create(newGroup);
+          const results = await transactionalEntityManager
+            .getRepository(Group)
+            .save(group);
+          return results;
+        }
+      );
+      return res;
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+      return error;
+    }
+  }
+
+  export async function getGroupById(id: string) {
+    try {
+      const res = await AppDataSource.transaction(
+        async (transactionalEntityManager) => {
+          const results = await transactionalEntityManager
+            .getRepository(Group)
+            .findOneBy({
+              id,
+            });
+          return results;
+        }
+      );
+      return res;
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+      return error;
+    }
+  }
+
+  export async function getGroups() {
+    try {
+      const res = await AppDataSource.transaction(
+        async (transactionalEntityManager) => {
+          const results = await transactionalEntityManager
+            .getRepository(Group)
+            .createQueryBuilder('group')
+            .orderBy('group.name', 'ASC')
+            .getMany();
+          return results;
+        }
+      );
+      return res;
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+      return error;
+    }
+  }
+ 
+  export async function updateGroup(id: string, groupUpdates: GroupUpdates) {
+    try {
+      const res = await AppDataSource.transaction(
+        async (transactionalEntityManager) => {
+          let results = await transactionalEntityManager
+            .getRepository(Group)
+            .findOneBy({
+              id,
+            });
+          if (results) {
+            await transactionalEntityManager
+              .getRepository(Group)
+              .merge(results, groupUpdates);
+            results = await transactionalEntityManager
+              .getRepository(Group)
+              .save(results);
+          }
+          return results;
+        }
+      );
+      return res;
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+      return error;
+    }
+  }
+
+  export async function deleteGroup(id: string) {
+    try {
+      const res = await AppDataSource.transaction(
+        async (transactionalEntityManager) => {
+          const results = await transactionalEntityManager
+            .getRepository(Group)
+            .findOneBy({
+              id,
+            });
+          if (results) {
+            await transactionalEntityManager
+              .getRepository(Group)
+              .remove(results);
+          }
+          return results;
+        }
+      );
+      return res;
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+      return error;
+    }
+  }
+  

@@ -31,3 +31,17 @@ export const updateUserBodySchema = Joi.object({
   age: Joi.number().min(4).max(130),
   is_deleted: Joi.boolean(),
 });
+
+export const createGroupBodySchema = Joi.object({
+  name: Joi.string().alphanum().min(3).max(10).required(),
+  permissions: Joi.array().items(
+    Joi.string().valid('READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES').required()
+  ),
+});
+
+export const updateGroupBodySchema = Joi.object({
+  name: Joi.string().alphanum().min(3).max(10),
+  permissions: Joi.array().items(
+    Joi.string().valid('READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES')
+  ),
+});
