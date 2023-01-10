@@ -1,4 +1,9 @@
-import { createUser, getUserById, getUsers, updateUser } from '../data-access/typeORMDataAccess';
+import {
+  createUser,
+  getUserById,
+  getUsers,
+  updateUser,
+} from '../data-access/typeORMDataAccess';
 import { User } from '../models/typeORMModels';
 import { UserUpdates } from '../types';
 

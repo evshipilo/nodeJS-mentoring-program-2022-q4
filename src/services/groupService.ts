@@ -1,11 +1,12 @@
 import {
+    addUsersToGroup,
   createGroup,
   deleteGroup,
   getGroupById,
   getGroups,
   updateGroup,
 } from '../data-access/typeORMDataAccess';
-import { Group } from '../models/typeORMModels';
+import { Group, UserGroup } from '../models/typeORMModels';
 import { GroupUpdates } from '../types';
 
 export class GroupService {
@@ -31,6 +32,11 @@ export class GroupService {
 
   public async getGroups() {
     const result = await getGroups();
+    return result;
+  }
+
+  public async addUsersToGroup(groupId: string, userIds: string[]) {
+    const result = await addUsersToGroup(groupId, userIds);
     return result;
   }
 }

@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToOne,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Permission } from '../types';
 
 @Entity('users')
@@ -29,4 +37,27 @@ export class Group {
 
   @Column('text', { array: true })
   permissions: Permission[];
+
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: "user_group",
+  })
+  users: User[];
+}
+
+@Entity('user_group')
+export class UserGroup {
+  @PrimaryColumn({ type: 'uuid' })
+  usersId: string;
+
+  @PrimaryColumn({ type: 'uuid' })
+  groupsId: string;
+
+  @OneToOne(() => User)
+  @JoinTable()
+  user: User;
+
+  @OneToOne(() => Group)
+  @JoinTable()
+  group: Group;
 }

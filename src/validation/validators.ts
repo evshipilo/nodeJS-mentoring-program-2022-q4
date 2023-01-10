@@ -1,6 +1,7 @@
 import { createValidator } from 'express-joi-validation';
 import {
   createGroupBodySchema,
+    createGroupRelationsBodySchema,
     createUserBodySchema,
     paramsIDSchema,
     paramsSubstringLimitSchema,
@@ -16,6 +17,7 @@ export const paramsIdValidator = validator.params(paramsIDSchema)
 export const userQuerySubstringLimitValidator = validator.query(paramsSubstringLimitSchema)
 export const groupBodyValidatorOnCreate = validator.body(createGroupBodySchema)
 export const groupBodyValidatorOnUpdate = validator.body(updateGroupBodySchema)
+export const groupRelationsBodyValidator = validator.body(createGroupRelationsBodySchema)
 
 
 

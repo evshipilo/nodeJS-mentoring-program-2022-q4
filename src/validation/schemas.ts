@@ -45,3 +45,9 @@ export const updateGroupBodySchema = Joi.object({
     Joi.string().valid('READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES')
   ),
 });
+
+export const createGroupRelationsBodySchema = Joi.object({
+  usersId: Joi.array().items(
+    Joi.string().min(36).max(36)
+  ),
+});
