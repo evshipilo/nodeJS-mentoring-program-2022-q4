@@ -3,10 +3,10 @@ import { UserService } from '../services/userService';
 import {
   userBodyValidatorOnCreate,
   userBodyValidatorOnUpdate,
-  userParamsIdValidator,
+  paramsIdValidator,
   userQuerySubstringLimitValidator,
 } from '../validation/validators';
-import { User } from '../types';
+import { User } from '../models/typeORMModels';
 
 const user = express.Router();
 const userService = new UserService();
@@ -21,7 +21,7 @@ user.post('/user', userBodyValidatorOnCreate, async (req, res) => {
   }
 });
 
-user.get('/user/:id', userParamsIdValidator, async (req, res) => {
+user.get('/user/:id', paramsIdValidator, async (req, res) => {
   const { id } = req.params;
   const result = await userService.getUserById(id);
   if (result instanceof Error) {
@@ -36,7 +36,7 @@ user.get('/user/:id', userParamsIdValidator, async (req, res) => {
 user.put(
   '/user/:id',
   userBodyValidatorOnUpdate,
-  userParamsIdValidator,
+  paramsIdValidator,
   async (req, res) => {
     const { id } = req.params;
     const result = await userService.updateUser(id, req.body);
@@ -50,7 +50,7 @@ user.put(
   }
 );
 
-user.delete('/user/:id', userParamsIdValidator, async (req, res) => {
+user.delete('/user/:id', paramsIdValidator, async (req, res) => {
   const { id } = req.params;
   const result = await userService.deleteUser(id);
   if (result instanceof Error) {

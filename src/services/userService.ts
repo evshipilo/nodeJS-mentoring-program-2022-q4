@@ -1,6 +1,11 @@
-//import { createUser, getUserById, getUsers, updateUser } from '../data-access/sequelizeORMDataAccess';
-import { createUser, getUserById, getUsers, updateUser } from '../data-access/typeORMDataAccess';
-import { User, UserUpdates } from '../types';
+import {
+  createUser,
+  getUserById,
+  getUsers,
+  updateUser,
+} from '../data-access/typeORMDataAccess';
+import { User } from '../models/typeORMModels';
+import { UserUpdates } from '../types';
 
 export class UserService {
   public async createUser(user: User) {
