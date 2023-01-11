@@ -7,6 +7,7 @@ import {
   userQuerySubstringLimitValidator,
 } from '../validation/validators';
 import { User } from '../models/typeORMModels';
+import { methodLogger } from '../middlewares/methodLogger';
 
 const user = express.Router();
 const userService = new UserService();
@@ -64,7 +65,7 @@ user.delete('/user/:id', paramsIdValidator, async (req, res) => {
   }
 });
 
-user.get('/users', userQuerySubstringLimitValidator, async (req, res) => {
+user.get('/users', userQuerySubstringLimitValidator, methodLogger, async (req, res) => {
   const substring = req.query.login_substring as string;
   const limit = req.query.limit as string;
 
