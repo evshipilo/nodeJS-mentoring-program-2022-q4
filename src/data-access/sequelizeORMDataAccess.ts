@@ -6,7 +6,6 @@ import { User, UserUpdates } from '../types';
 export async function createUser({login, password, age, is_deleted}: User) {
     try {
       await sequelize.authenticate();
-      console.log('Connection has been established successfully.');
       const user = await UserModel.create({ login, password, age, is_deleted });
       console.log(user?.toJSON());
       return user;
@@ -19,7 +18,6 @@ export async function createUser({login, password, age, is_deleted}: User) {
   export async function getUserById(id: string) {
     try {
       await sequelize.authenticate();
-      console.log('Connection has been established successfully.');
       const user: Model | null = await UserModel.findByPk(id);
       console.log(user?.toJSON());
       return user;
@@ -30,12 +28,11 @@ export async function createUser({login, password, age, is_deleted}: User) {
   }
 
   export async function getUsers(
-    limit: number | undefined,
-    substring: string
+    substring: string,
+    limit?: number,
   ) {
     try {
       await sequelize.authenticate();
-      console.log('Connection has been established successfully.');
       const users: Model[] = await UserModel.findAll({
         where: {
           login: {
@@ -59,7 +56,6 @@ export async function createUser({login, password, age, is_deleted}: User) {
   ) {
     try {
       await sequelize.authenticate();
-      console.log('Connection has been established successfully.');
       const user: Model | null = await UserModel.findByPk(id);
       let updatedUser: Model | null = null;
       if (user) {

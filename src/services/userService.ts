@@ -27,12 +27,12 @@ export class UserService {
   }
 
   public async getUsers(
-    limit: string | undefined,
-    substring: string | undefined
+    limit?: string,
+    substring?: string
   ) {
     const updatedLimit = limit ? +limit : undefined;
-    const updatedSubstring = substring ? substring : '';
-    const result = await getUsers(updatedLimit, updatedSubstring);
+    const updatedSubstring = substring || '';
+    const result = await getUsers( updatedSubstring, updatedLimit);
     return result;
   }
 }

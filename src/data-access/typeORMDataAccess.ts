@@ -30,6 +30,7 @@ AppDataSource.initialize()
   })
   .catch((err) => {
     console.error('Error during Data Source initialization:', err);
+    process.exit();
   });
 
 export async function createUser(newUser: User) {
@@ -71,7 +72,7 @@ export async function getUserById(id: string) {
   }
 }
 
-export async function getUsers(limit: number | undefined, substring: string) {
+export async function getUsers( substring: string, limit?: number) {
   try {
     const res = await AppDataSource.transaction(
       async (transactionalEntityManager) => {
