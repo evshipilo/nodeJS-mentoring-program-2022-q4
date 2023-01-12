@@ -48,8 +48,8 @@ export async function createUser(newUser: User) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -68,7 +68,7 @@ export async function getUserById(id: string) {
     return res;
   } catch (error) {
     console.error('Unable to connect to the database:', error);
-    return error;
+    throw error;
   }
 }
 
@@ -88,8 +88,8 @@ export async function getUsers( substring: string, limit?: number) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -116,6 +116,6 @@ export async function updateUser(id: string, userUpdates: UserUpdates) {
     return res;
   } catch (error) {
     console.error('Unable to connect to the database:', error);
-    return error;
+    throw error;
   }
 }
