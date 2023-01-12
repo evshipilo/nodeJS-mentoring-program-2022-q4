@@ -1,5 +1,10 @@
 //import { createUser, getUserById, getUsers, updateUser } from '../data-access/sequelizeORMDataAccess';
-import { createUser, getUserById, getUsers, updateUser } from '../data-access/typeORMDataAccess';
+import {
+  createUser,
+  getUserById,
+  getUsers,
+  updateUser,
+} from '../data-access/typeORMDataAccess';
 import { User, UserUpdates } from '../types';
 
 export class UserService {
@@ -22,12 +27,9 @@ export class UserService {
     return await updateUser(id, userUpdates);
   }
 
-  public async getUsers(
-    limit?: string,
-    substring?: string
-  ) {
+  public async getUsers(substring?: string, limit?: string) {
     const updatedLimit = limit ? +limit : undefined;
     const updatedSubstring = substring || '';
-    return await getUsers( updatedSubstring, updatedLimit);
+    return await getUsers(updatedSubstring, updatedLimit);
   }
 }

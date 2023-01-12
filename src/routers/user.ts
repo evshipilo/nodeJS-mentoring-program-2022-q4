@@ -65,10 +65,10 @@ user.delete('/user/:id', userParamsIdValidator, async (req, res) => {
 });
 
 user.get('/users', userQuerySubstringLimitValidator, async (req, res) => {
-  const substring = req.query.login_substring as string;
-  const limit = req.query.limit as string;
+  const {login_substring} = req.query;
+  const {limit} = req.query;
 
-  const result = await userService.getUsers(limit, substring);
+  const result = await userService.getUsers(login_substring as string | undefined, limit as string | undefined);
   
   if (result instanceof Error) {
     res.status(500).json({ message: result });
