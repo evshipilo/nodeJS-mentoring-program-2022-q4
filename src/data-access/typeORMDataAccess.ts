@@ -67,7 +67,7 @@ export async function getUserById(id: string) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error('Database error:', error);
     throw error;
   }
 }
@@ -115,7 +115,7 @@ export async function updateUser(id: string, userUpdates: UserUpdates) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error('Database error:', error);
     throw error;
   }
 }
