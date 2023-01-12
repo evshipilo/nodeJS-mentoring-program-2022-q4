@@ -68,7 +68,7 @@ user.get('/users', userQuerySubstringLimitValidator, async (req, res) => {
   const {login_substring} = req.query;
   const {limit} = req.query;
 
-  const result = await userService.getUsers(login_substring as string, limit as string);
+  const result = await userService.getUsers(login_substring as string | undefined, limit as string | undefined);
   
   if (result instanceof Error) {
     res.status(500).json({ message: result });

@@ -9,35 +9,27 @@ import { UserUpdates } from '../types';
 
 export class UserService {
   public async createUser(user: User) {
-    const result = await createUser(user);
-    return result;
+    return await createUser(user);
   }
 
   public async getUserById(id: string) {
-    const result = await getUserById(id);
-    return result;
+    return await getUserById(id);
   }
 
   public async updateUser(id: string, userUpdates: UserUpdates) {
-    const result = await updateUser(id, userUpdates);
-    return result;
+    return await updateUser(id, userUpdates);
   }
 
   public async deleteUser(
     id: string,
     userUpdates: UserUpdates = { is_deleted: true }
   ) {
-    const result = await updateUser(id, userUpdates);
-    return result;
+    return await updateUser(id, userUpdates);
   }
 
-  public async getUsers(
-    limit: string | undefined,
-    substring: string | undefined
-  ) {
+  public async getUsers(substring?: string, limit?: string) {
     const updatedLimit = limit ? +limit : undefined;
-    const updatedSubstring = substring ? substring : '';
-    const result = await getUsers(updatedSubstring, updatedLimit,);
-    return result;
+    const updatedSubstring = substring || '';
+    return await getUsers(updatedSubstring, updatedLimit);
   }
 }

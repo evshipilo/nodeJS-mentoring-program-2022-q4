@@ -30,6 +30,7 @@ AppDataSource.initialize()
   })
   .catch((err) => {
     console.error('Error during Data Source initialization:', err);
+    process.exit();
   });
 
 export async function createUser(newUser: User) {
@@ -47,8 +48,8 @@ export async function createUser(newUser: User) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -66,8 +67,8 @@ export async function getUserById(id: string) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -87,8 +88,8 @@ export async function getUsers(substring: string, limit?: number) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -114,8 +115,8 @@ export async function updateUser(id: string, userUpdates: UserUpdates) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -134,8 +135,8 @@ export async function createGroup(newGroup: Group) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -153,8 +154,8 @@ export async function getGroupById(id: string) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -172,8 +173,8 @@ export async function getGroups() {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -199,8 +200,8 @@ export async function updateGroup(id: string, groupUpdates: GroupUpdates) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -221,8 +222,8 @@ export async function deleteGroup(id: string) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
@@ -261,7 +262,7 @@ export async function addUsersToGroup(groupId: string, userIds: string[]) {
     );
     return res;
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    return error;
+    console.error('Database error:', error);
+    throw error;
   }
 }
