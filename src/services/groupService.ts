@@ -1,12 +1,12 @@
 import {
-    addUsersToGroup,
+  addUsersToGroup,
   createGroup,
   deleteGroup,
   getGroupById,
   getGroups,
   updateGroup,
 } from '../data-access/typeORMDataAccess';
-import { Group, UserGroup } from '../models/typeORMModels';
+import { Group } from '../models/typeORMModels';
 import { GroupUpdates } from '../types';
 
 export class GroupService {

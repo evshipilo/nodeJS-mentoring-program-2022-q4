@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
-import { Group, User, UserGroup } from '../models/typeORMModels';
+import { Group, User} from '../models/typeORMModels';
 import { GroupUpdates, UserUpdates } from '../types';
 
 dotenv.config();
@@ -71,7 +71,7 @@ export async function getUserById(id: string) {
   }
 }
 
-export async function getUsers(limit: number | undefined, substring: string) {
+export async function getUsers(substring: string, limit?: number) {
   try {
     const res = await AppDataSource.transaction(
       async (transactionalEntityManager) => {

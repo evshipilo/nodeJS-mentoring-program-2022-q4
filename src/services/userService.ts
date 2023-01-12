@@ -37,7 +37,7 @@ export class UserService {
   ) {
     const updatedLimit = limit ? +limit : undefined;
     const updatedSubstring = substring ? substring : '';
-    const result = await getUsers(updatedLimit, updatedSubstring);
+    const result = await getUsers(updatedSubstring, updatedLimit,);
     return result;
   }
 }
