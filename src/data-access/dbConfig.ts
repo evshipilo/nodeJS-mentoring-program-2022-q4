@@ -22,13 +22,4 @@ const AppDataSource = new DataSource({
   migrations: [],
 });
 
-AppDataSource.initialize()
-  .then(() => {
-    console.log('Data Source has been initialized!');
-  })
-  .catch((err) => {
-    console.error('Error during Data Source initialization:', err);
-    process.exit();
-  });
-
 export default AppDataSource;
