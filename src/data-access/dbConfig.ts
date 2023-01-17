@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
+import { myMigration1673944710450 } from '../migrations/1673944710450-my-migration';
 import { Group, User} from '../models/typeORMModels';
 dotenv.config();
 
@@ -8,7 +9,7 @@ const DBname = process.env.NAME || '';
 const DBpassword = process.env.DB_PASSWORD || '';
 const DBhost = process.env.DB_HOST;
 
-const AppDataSource = new DataSource({
+const dataSource = new DataSource({
   type: 'postgres',
   host: DBhost,
   port: 5432,
@@ -19,7 +20,10 @@ const AppDataSource = new DataSource({
   logging: true,
   entities: [User, Group],
   subscribers: [],
-  migrations: [],
+  migrations: [myMigration1673944710450],
 });
 
-export default AppDataSource;
+// npm run typeorm -- migration:generate ./src/migrations/my-migration
+// npm run typeorm -- migration:run
+
+export default dataSource;
