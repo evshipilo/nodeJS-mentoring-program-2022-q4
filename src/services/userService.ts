@@ -23,7 +23,6 @@ export class UserService {
   }
 
   public async getUsers(substring?: string, limit?: number) {
-    const updatedSubstring = substring || '';
-    return await Repository.getUsers(updatedSubstring, limit);
+    return await Repository.getUsers(substring, limit);
   }
 }

@@ -1,4 +1,4 @@
-import { Group, User} from '../models/typeORMModels';
+import { Group, User } from '../models/typeORMModels';
 import { GroupUpdates, UserUpdates } from '../types';
 import AppDataSource from './dbConfig';
 
@@ -50,17 +50,25 @@ export async function getUserById(id: string) {
   }
 }
 
-export async function getUsers(substring: string, limit?: number) {
+export async function getUsers(substring?: string, limit?: number) {
   try {
     const res = await AppDataSource.transaction(
       async (transactionalEntityManager) => {
-        const results = await transactionalEntityManager
-          .getRepository(User)
-          .createQueryBuilder('user')
-          .where('user.login like :login', { login: `%${substring}%` })
-          .orderBy('user.login', 'ASC')
-          .limit(limit)
-          .getMany();
+        const results = substring
+          ? await transactionalEntityManager
+              .getRepository(User)
+              .createQueryBuilder('user')
+              .where('user.login like :login', { login: `%${substring}%` })
+              .orderBy('user.login', 'ASC')
+              .limit(limit)
+              .getMany()
+          : await transactionalEntityManager
+              .getRepository(User)
+              .createQueryBuilder('user')
+              .orderBy('user.login', 'ASC')
+              .limit(limit)
+              .getMany();
+
         return results;
       }
     );
