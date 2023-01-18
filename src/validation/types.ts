@@ -9,7 +9,7 @@ export interface ParamsIDSchema extends ValidatedRequestSchema {
 
 export interface QuerySubstringLimitSchema extends ValidatedRequestSchema {
   [ContainerTypes.Query]: {
-    login_substring?: string;
+    loginsubstring?: string;
     limit?: number;
   };
 }

@@ -99,13 +99,10 @@ user.get(
   userQuerySubstringLimitValidator,
   async (req: ValidatedRequest<QuerySubstringLimitSchema>, res: Response) => {
     try {
-      const { login_substring } = req.query;
+      const { loginsubstring } = req.query;
       const { limit } = req.query;
 
-      const result = await userService.getUsers(
-        login_substring as string | undefined,
-        limit as string | undefined
-      );
+      const result = await userService.getUsers(loginsubstring, limit);
       res.status(200).json({ users: result });
     } catch (e) {
       res

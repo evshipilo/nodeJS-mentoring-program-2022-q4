@@ -104,7 +104,7 @@ group.delete(
 );
 
 group.post(
-  '/group/:id/add_users',
+  '/group/:id/addusers',
   paramsIdValidator,
   groupRelationsBodyValidator,
   async (

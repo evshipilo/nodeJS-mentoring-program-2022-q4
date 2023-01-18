@@ -22,9 +22,8 @@ export class UserService {
     return await Repository.updateUser(id, userUpdates);
   }
 
-  public async getUsers(substring?: string, limit?: string) {
-    const updatedLimit = limit ? +limit : undefined;
+  public async getUsers(substring?: string, limit?: number) {
     const updatedSubstring = substring || '';
-    return await Repository.getUsers(updatedSubstring, updatedLimit);
+    return await Repository.getUsers(updatedSubstring, limit);
   }
 }
