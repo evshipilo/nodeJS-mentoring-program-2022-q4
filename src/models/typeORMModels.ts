@@ -42,7 +42,7 @@ export class Group {
   @JoinTable({
     name: "user_group",
   })
-  users: User[];
+  users?: User[];
 }
 
 @Entity('user_group')

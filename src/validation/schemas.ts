@@ -4,7 +4,7 @@ export const paramsIDSchema = Joi.object({
   id: Joi.string().min(36).max(36).required(),
 });
 
-export const paramsSubstringLimitSchema = Joi.object({
+export const querySubstringLimitSchema = Joi.object({
   login_substring: Joi.string().alphanum().min(1).max(10),
   limit: Joi.number().min(1),
 });
