@@ -1,35 +1,30 @@
-import {
-  createUser,
-  getUserById,
-  getUsers,
-  updateUser,
-} from '../data-access/typeORMDataAccess';
+import * as Repository from '../data-access/typeORMDataAccess';
 import { User } from '../models/typeORMModels';
 import { UserUpdates } from '../types';
 
 export class UserService {
   public async createUser(user: User) {
-    return await createUser(user);
+    return await Repository.createUser(user);
   }
 
   public async getUserById(id: string) {
-    return await getUserById(id);
+    return await Repository.getUserById(id);
   }
 
   public async updateUser(id: string, userUpdates: UserUpdates) {
-    return await updateUser(id, userUpdates);
+    return await Repository.updateUser(id, userUpdates);
   }
 
   public async deleteUser(
     id: string,
     userUpdates: UserUpdates = { is_deleted: true }
   ) {
-    return await updateUser(id, userUpdates);
+    return await Repository.updateUser(id, userUpdates);
   }
 
   public async getUsers(substring?: string, limit?: string) {
     const updatedLimit = limit ? +limit : undefined;
     const updatedSubstring = substring || '';
-    return await getUsers(updatedSubstring, updatedLimit);
+    return await Repository.getUsers(updatedSubstring, updatedLimit);
   }
 }

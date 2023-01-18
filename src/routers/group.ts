@@ -73,7 +73,7 @@ group.delete('/group/:id', paramsIdValidator, async (req, res) => {
 });
 
 group.post(
-    '/group_relations/:id',
+    '/group/:id/add_users',
     paramsIdValidator,
     groupRelationsBodyValidator,
     async (req, res) => {
