@@ -14,7 +14,6 @@ import {
   QuerySubstringLimitSchema,
   UpdateUserBodySchema,
 } from '../validation/types';
-import { methodLogger } from '../middlewares/methodLogger';
 
 const user = express.Router();
 const userService = new UserService();
@@ -112,5 +111,10 @@ user.get(
     }
   }
 );
+
+user.get('/error', function(req, res, next) {
+   return next(new Error("I AM UNHANDLED EXEPTION>>>>>"));
+  // return next(new Promise((res,rej)=>{rej('I AM UNHANDLED PROMISE REJECTION>>>>>')}));
+});
 
 export default user;
