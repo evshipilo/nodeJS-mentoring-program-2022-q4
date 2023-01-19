@@ -14,6 +14,7 @@ import {
   QuerySubstringLimitSchema,
   UpdateUserBodySchema,
 } from '../validation/types';
+import { methodLogger } from '../middlewares/methodLogger';
 
 const user = express.Router();
 const userService = new UserService();
