@@ -6,10 +6,16 @@ export const methodLogger = function (
   next: NextFunction
 ) {
   res.on('finish', () => {
-    console.log('LOGGED>>>> request method: ', req.method);
-    console.log('LOGGED>>>> request params: ', req.params);
-    console.log('LOGGED>>>> request body: ', req.body);
-    console.log('LOGGED>>>> request query: ', req.query);
+    console.log(
+      'LOGGED>>>> request method: ',
+      req.method,
+      'request params: ',
+      req.params,
+      'request body: ',
+      req.body,
+      'request query: ',
+      req.query
+    );
   });
   next();
 };
