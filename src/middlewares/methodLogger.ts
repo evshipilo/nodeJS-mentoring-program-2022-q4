@@ -5,7 +5,7 @@ export const methodLogger = function (
   res: Response,
   next: NextFunction
 ) {
-  res.on('finish', () => {
+  // res.on('finish', () => {
     console.log(
       'LOGGED>>>> request method: ',
       req.method,
@@ -16,6 +16,6 @@ export const methodLogger = function (
       'request query: ',
       req.query
     );
-  });
+  // });
   next();
 };

@@ -1,9 +1,11 @@
+import { log } from "./middlewares/winstonLogger";
+
 export const processListener = function(){
     process
-    .on('unhandledRejection', (reason, p) => {
-      console.error(reason, '---->>>>Unhandled Rejection at Promise', p);
+    .on('unhandledRejection', (reason) => {
+      log.error(reason);
     })
     .on('uncaughtException', err => {
-      console.error(err, '----->>>>>Uncaught Exception thrown');
+      log.error(err);
     });
 } 

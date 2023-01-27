@@ -1,4 +1,4 @@
-import express, { Response } from 'express';
+import express, { NextFunction, Response } from 'express';
 import { UserService } from '../services/userService';
 import {
   userBodyValidatorOnCreate,
@@ -14,30 +14,30 @@ import {
   QuerySubstringLimitSchema,
   UpdateUserBodySchema,
 } from '../validation/types';
+import { methodLogger } from '../middlewares/methodLogger';
 
 const user = express.Router();
 const userService = new UserService();
 
 user.post(
   '/user',
-  userBodyValidatorOnCreate,
-  async (req: ValidatedRequest<CreateUserBodySchema>, res: Response) => {
+  userBodyValidatorOnCreate, methodLogger,
+  async (req: ValidatedRequest<CreateUserBodySchema>, res: Response, next: NextFunction) => {
     try {
       const user: User = { ...req.body };
       const result = await userService.createUser(user);
       res.status(200).json({ createdUser: result });
     } catch (e) {
-      res
-        .status(500)
-        .json({ message: e instanceof Error ? e.message : 'Unknown Error' });
+      // pass error to errorHandler
+      next(e)
     }
   }
 );
 
 user.get(
   '/user/:id',
-  paramsIdValidator,
-  async (req: ValidatedRequest<ParamsIDSchema>, res: Response) => {
+  paramsIdValidator, methodLogger,
+  async (req: ValidatedRequest<ParamsIDSchema>, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const result = await userService.getUserById(id);
@@ -45,9 +45,7 @@ user.get(
         ? res.status(200).json({ user: result })
         : res.status(404).json({ message: `no users with id ${id}` });
     } catch (e) {
-      res
-        .status(500)
-        .json({ message: e instanceof Error ? e.message : 'Unknown Error' });
+      next(e)
     }
   }
 );
@@ -56,9 +54,10 @@ user.put(
   '/user/:id',
   userBodyValidatorOnUpdate,
   paramsIdValidator,
+  methodLogger,
   async (
     req: ValidatedRequest<ParamsIDSchema & UpdateUserBodySchema>,
-    res: Response
+    res: Response, next: NextFunction
   ) => {
     try {
       const { id } = req.params;
@@ -67,9 +66,7 @@ user.put(
         ? res.status(200).json({ updatedUser: result })
         : res.status(404).json({ message: `no users with id ${id}` });
     } catch (e) {
-      res
-        .status(500)
-        .json({ message: e instanceof Error ? e.message : 'Unknown Error' });
+      next(e)
     }
   }
 );
@@ -77,7 +74,8 @@ user.put(
 user.delete(
   '/user/:id',
   paramsIdValidator,
-  async (req: ValidatedRequest<ParamsIDSchema>, res: Response) => {
+  methodLogger,
+  async (req: ValidatedRequest<ParamsIDSchema>, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const result = await userService.deleteUser(id);
@@ -87,9 +85,7 @@ user.delete(
             .json({ message: `user with id ${id} marked as deleted` })
         : res.status(404).json({ message: `no users with id ${id}` });
     } catch (e) {
-      res
-        .status(500)
-        .json({ message: e instanceof Error ? e.message : 'Unknown Error' });
+      next(e)
     }
   }
 );
@@ -97,7 +93,8 @@ user.delete(
 user.get(
   '/users',
   userQuerySubstringLimitValidator,
-  async (req: ValidatedRequest<QuerySubstringLimitSchema>, res: Response) => {
+  methodLogger,
+  async (req: ValidatedRequest<QuerySubstringLimitSchema>, res: Response, next: NextFunction) => {
     try {
       const { loginsubstring } = req.query;
       const { limit } = req.query;
@@ -105,16 +102,14 @@ user.get(
       const result = await userService.getUsers(loginsubstring, limit);
       res.status(200).json({ users: result });
     } catch (e) {
-      res
-        .status(500)
-        .json({ message: e instanceof Error ? e.message : 'Unknown Error' });
+      next(e)
     }
   }
 );
 
-user.get('/error', function(req, res, next) {
-   return next(new Error("I AM UNHANDLED EXEPTION>>>>>"));
-  // return next(new Promise((res,rej)=>{rej('I AM UNHANDLED PROMISE REJECTION>>>>>')}));
+user.get('/error', methodLogger, function() {
+  //throw new Error("I AM UNHANDLED EXEPTION>>>>>");
+  //new Promise((res,rej)=>{rej('I AM UNHANDLED PROMISE REJECTION>>>>>')});
 });
 
 export default user;
