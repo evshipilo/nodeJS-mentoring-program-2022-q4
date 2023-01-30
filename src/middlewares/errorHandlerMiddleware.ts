@@ -4,9 +4,9 @@ import {
   FindGroupError,
   FindUserError,
 } from '../customErrors';
-import { log } from './winstonLogger';
+import { logger } from '../logger/winstonLogger';
 
-export const errorHandler = function (
+export const errorHandlerMiddleware = function (
   err: Error,
   req: Request,
   res: Response,
@@ -14,27 +14,24 @@ export const errorHandler = function (
 ) {
   if (err instanceof Error) {
     if (err instanceof DBInitializationError) {
-      log.error(err.message);
+      logger.error(err.message);
       res.status(500).send(err.message);
       process.exit(1);
-    }
-    if (err instanceof FindUserError) {
-      log.error(err.message);
+    } else if (err instanceof FindUserError) {
+      logger.error(err.message);
       res.status(404).send(err.message);
       next();
-      return
-    }
-    if (err instanceof FindGroupError) {
-      log.error(err.message);
+    } else if (err instanceof FindGroupError) {
+      logger.error(err.message);
       res.status(404).send(err.message);
       next();
-      return
+    } else {
+      logger.error(err.message);
+      res.status(500).send(err.message);
+      next();
     }
-    log.error(err.message);
-    res.status(500).send(err.message);
-    next();
   } else {
-    log.error('Unknown error');
+    logger.error(err);
     res.status(500).send('Unknown error');
     next();
   }

@@ -14,7 +14,7 @@ import {
   ParamsIDSchema,
   UpdateUserBodySchema,
 } from '../validation/types';
-import { methodLogger } from '../middlewares/methodLogger';
+import { methodLoggerMiddleware } from '../middlewares/methodLoggerMiddleware';
 
 const group = express.Router();
 const groupService = new GroupService();
@@ -22,7 +22,7 @@ const groupService = new GroupService();
 group.post(
   '/group',
   groupBodyValidatorOnCreate,
-  methodLogger,
+  methodLoggerMiddleware,
   async (
     req: ValidatedRequest<CreateGroupBodySchema>,
     res: Response,
@@ -41,7 +41,7 @@ group.post(
 group.get(
   '/group/:id',
   paramsIdValidator,
-  methodLogger,
+  methodLoggerMiddleware,
   async (
     req: ValidatedRequest<ParamsIDSchema>,
     res: Response,
@@ -59,7 +59,7 @@ group.get(
 
 group.get(
   '/groups',
-  methodLogger,
+  methodLoggerMiddleware,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await groupService.getGroups();
@@ -74,7 +74,7 @@ group.put(
   '/group/:id',
   groupBodyValidatorOnUpdate,
   paramsIdValidator,
-  methodLogger,
+  methodLoggerMiddleware,
   async (
     req: ValidatedRequest<ParamsIDSchema & UpdateUserBodySchema>,
     res: Response,
@@ -93,7 +93,7 @@ group.put(
 group.delete(
   '/group/:id',
   paramsIdValidator,
-  methodLogger,
+  methodLoggerMiddleware,
   async (
     req: ValidatedRequest<ParamsIDSchema>,
     res: Response,
@@ -113,7 +113,7 @@ group.post(
   '/group/:id/addusers',
   paramsIdValidator,
   groupRelationsBodyValidator,
-  methodLogger,
+  methodLoggerMiddleware,
   async (
     req: ValidatedRequest<ParamsIDSchema & CreateGroupRelationsBodySchema>,
     res: Response,

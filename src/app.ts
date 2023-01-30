@@ -4,10 +4,10 @@ import cors from 'cors';
 import * as dotenv from 'dotenv'
 import user from './routers/user';
 import group from './routers/group';
-import { errorHandler } from './middlewares/errorHandler';
+import { errorHandlerMiddleware } from './middlewares/errorHandlerMiddleware';
 import {processListener} from './process'
-import { morganMiddleware } from './middlewares/morgan.middleware';
-import { log } from './middlewares/winstonLogger';
+import { loggerMiddleware } from './middlewares/loggerMiddleware';
+import { logger } from './logger/winstonLogger';
 const app = express();
 dotenv.config()
 
@@ -16,17 +16,15 @@ app.use(cors());
 // Transforms the raw string of req.body into json
 app.use(express.json());
 //load common middlewares
-app.use(morganMiddleware);
+app.use(loggerMiddleware);
 // Load API routes
 app.use(user, group);
 
 //load error handler
-app.use(errorHandler);
-
-
+app.use(errorHandlerMiddleware);
 
 app.listen(process.env.PORT, () => {
-    log.info(`App listening at http://localhost:${process.env.PORT}`)
+  logger.info(`App listening at http://localhost:${process.env.PORT}`)
   });
 
 processListener();

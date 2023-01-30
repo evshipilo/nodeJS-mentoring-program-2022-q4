@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-export const methodLogger = function (
+export const methodLoggerMiddleware = function (
   req: Request,
   res: Response,
   next: NextFunction

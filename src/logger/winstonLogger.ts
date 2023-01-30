@@ -40,7 +40,7 @@ const transports = [
 ]
 // Create the logger instance that has to be exported
 // and used to log messages.
-export const log = winston.createLogger({
+export const logger = winston.createLogger({
   level: 'debug',
   levels,
   format,

@@ -3,14 +3,14 @@ import {
   FindGroupError,
   FindUserError,
 } from '../customErrors';
-import { log } from '../middlewares/winstonLogger';
+import { logger } from '../logger/winstonLogger';
 import { Group, User } from '../models/typeORMModels';
 import { GroupUpdates, UserUpdates } from '../types';
 import AppDataSource from './dbConfig';
 
 AppDataSource.initialize()
   .then(() => {
-    log.info('Data base initialized');
+    logger.info('Data base initialized');
   })
   .catch(() => {
     throw new DBInitializationError('initialize faled');

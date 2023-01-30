@@ -14,14 +14,14 @@ import {
   QuerySubstringLimitSchema,
   UpdateUserBodySchema,
 } from '../validation/types';
-import { methodLogger } from '../middlewares/methodLogger';
+import { methodLoggerMiddleware } from '../middlewares/methodLoggerMiddleware';
 
 const user = express.Router();
 const userService = new UserService();
 
 user.post(
   '/user',
-  userBodyValidatorOnCreate, methodLogger,
+  userBodyValidatorOnCreate, methodLoggerMiddleware,
   async (req: ValidatedRequest<CreateUserBodySchema>, res: Response, next: NextFunction) => {
     try {
       const user: User = { ...req.body };
@@ -36,7 +36,7 @@ user.post(
 
 user.get(
   '/user/:id',
-  paramsIdValidator, methodLogger,
+  paramsIdValidator, methodLoggerMiddleware,
   async (req: ValidatedRequest<ParamsIDSchema>, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -54,7 +54,7 @@ user.put(
   '/user/:id',
   userBodyValidatorOnUpdate,
   paramsIdValidator,
-  methodLogger,
+  methodLoggerMiddleware,
   async (
     req: ValidatedRequest<ParamsIDSchema & UpdateUserBodySchema>,
     res: Response, next: NextFunction
@@ -74,7 +74,7 @@ user.put(
 user.delete(
   '/user/:id',
   paramsIdValidator,
-  methodLogger,
+  methodLoggerMiddleware,
   async (req: ValidatedRequest<ParamsIDSchema>, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -93,7 +93,7 @@ user.delete(
 user.get(
   '/users',
   userQuerySubstringLimitValidator,
-  methodLogger,
+  methodLoggerMiddleware,
   async (req: ValidatedRequest<QuerySubstringLimitSchema>, res: Response, next: NextFunction) => {
     try {
       const { loginsubstring } = req.query;
@@ -107,7 +107,7 @@ user.get(
   }
 );
 
-user.get('/error', methodLogger, function() {
+user.get('/error', methodLoggerMiddleware, function() {
   //throw new Error("I AM UNHANDLED EXEPTION>>>>>");
   //new Promise((res,rej)=>{rej('I AM UNHANDLED PROMISE REJECTION>>>>>')});
 });
