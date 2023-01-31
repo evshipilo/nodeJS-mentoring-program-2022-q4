@@ -27,4 +27,5 @@ app.listen(process.env.PORT, () => {
   logger.info(`App listening at http://localhost:${process.env.PORT}`)
   });
 
+//handle unhandled errors  
 processListener();

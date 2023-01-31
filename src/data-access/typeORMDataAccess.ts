@@ -20,7 +20,7 @@ export async function createUser(newUser: User) {
   const res = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       const user = transactionalEntityManager
-        .getRepository(User)
+        .getRepository(Group)
         .create(newUser);
       const results = await transactionalEntityManager
         .getRepository(User)
