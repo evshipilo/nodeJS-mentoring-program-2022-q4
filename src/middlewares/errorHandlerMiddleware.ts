@@ -12,27 +12,22 @@ export const errorHandlerMiddleware = function (
   res: Response,
   next: NextFunction
 ) {
-  if (err instanceof Error) {
-    if (err instanceof DBInitializationError) {
-      logger.error(err.message);
-      res.status(500).send(err.message);
-      process.exit(1);
-    } else if (err instanceof FindUserError) {
-      logger.error(err.message);
-      res.status(404).send(err.message);
-      next();
-    } else if (err instanceof FindGroupError) {
-      logger.error(err.message);
-      res.status(404).send(err.message);
-      next();
-    } else {
-      logger.error(err.message);
-      res.status(500).send(err.message);
-      next();
-    }
-  } else {
-    logger.error(err);
+  if (!(err instanceof Error)) {
+    // something absolutely unexpected happened
+    logger.error(`Unexpected instance of error. Given error type: ${typeof err}`);
     res.status(500).send('Unknown error');
     next();
   }
+  
+  logger.error(err.message);
+
+  if (err instanceof DBInitializationError) {
+      res.status(500).send(err.message);
+      process.exit(1);
+    } else if ((err instanceof FindUserError) || (err instanceof FindGroupError)) {
+      res.status(404).send(err.message);
+    } else {
+      res.status(500).send(err.message);
+    }
+    next();
 };

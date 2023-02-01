@@ -12,12 +12,12 @@ AppDataSource.initialize()
   .then(() => {
     logger.info('Data base initialized');
   })
-  .catch(() => {
+  .catch((e) => {
     throw new DBInitializationError('initialize faled');
   });
 
 export async function createUser(newUser: User) {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       const user = transactionalEntityManager
         .getRepository(Group)
@@ -28,11 +28,11 @@ export async function createUser(newUser: User) {
       return results;
     }
   );
-  return res;
+  return result;
 }
 
 export async function getUserById(id: string) {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       const results = await transactionalEntityManager
         .getRepository(User)
@@ -43,11 +43,11 @@ export async function getUserById(id: string) {
       return results;
     }
   );
-  return res;
+  return result;
 }
 
 export async function getUsers(substring?: string, limit?: number) {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       const results = substring
         ? await transactionalEntityManager
@@ -67,11 +67,11 @@ export async function getUsers(substring?: string, limit?: number) {
       return results;
     }
   );
-  return res;
+  return result;
 }
 
 export async function updateUser(id: string, userUpdates: UserUpdates) {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       let results = await transactionalEntityManager
         .getRepository(User)
@@ -88,11 +88,11 @@ export async function updateUser(id: string, userUpdates: UserUpdates) {
       return results;
     }
   );
-  return res;
+  return result;
 }
 
 export async function createGroup(newGroup: Group) {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       const group = transactionalEntityManager
         .getRepository(Group)
@@ -103,11 +103,11 @@ export async function createGroup(newGroup: Group) {
       return results;
     }
   );
-  return res;
+  return result;
 }
 
 export async function getGroupById(id: string) {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       const results = await transactionalEntityManager
         .getRepository(Group)
@@ -118,11 +118,11 @@ export async function getGroupById(id: string) {
       return results;
     }
   );
-  return res;
+  return result;
 }
 
 export async function getGroups() {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       const results = await transactionalEntityManager
         .getRepository(Group)
@@ -132,11 +132,11 @@ export async function getGroups() {
       return results;
     }
   );
-  return res;
+  return result;
 }
 
 export async function updateGroup(id: string, groupUpdates: GroupUpdates) {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       let results = await transactionalEntityManager
         .getRepository(Group)
@@ -153,11 +153,11 @@ export async function updateGroup(id: string, groupUpdates: GroupUpdates) {
       return results;
     }
   );
-  return res;
+  return result;
 }
 
 export async function deleteGroup(id: string) {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
       const results = await transactionalEntityManager
         .getRepository(Group)
@@ -169,40 +169,45 @@ export async function deleteGroup(id: string) {
       return results;
     }
   );
-  return res;
+  return result;
 }
 
 export async function addUsersToGroup(groupId: string, userIds: string[]) {
-  const res = await AppDataSource.transaction(
+  const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
-      let results;
-      const arrOfPromises = userIds.map(async (id) => {
-        const user: User | null = await transactionalEntityManager
-          .getRepository(User)
-          .findOneBy({
-            id,
-          });
+      // let results;
+      // const arrOfPromises = userIds.map(async (id) => {
+      //   const user: User | null = await transactionalEntityManager
+      //     .getRepository(User)
+      //     .findOneBy({
+      //       id,
+      //     });
 
-        return user;
-      });
-      const users: Array<User | null> = await Promise.all(arrOfPromises);
-      const filteredUsers = users.filter((user) => !!user) as User[];
+      //   return user;
+      // });
+      // const users: Array<User | null> = await Promise.all(arrOfPromises);
+      // const filteredUsers = users.filter((user) => !!user) as User[];
 
-      const group: Group | null = await transactionalEntityManager
-        .getRepository(Group)
-        .findOneBy({
-          id: groupId,
-        });
-      if (group) {
-        const mergeResult = transactionalEntityManager
-          .getRepository(Group)
-          .merge(group, { users: filteredUsers });
-        results = await transactionalEntityManager
-          .getRepository(Group)
-          .save(mergeResult);
-      }
+      // const group: Group | null = await transactionalEntityManager
+      //   .getRepository(Group)
+      //   .findOneBy({
+      //     id: groupId,
+      //   });
+      // if (group) {
+      //   const mergeResult = transactionalEntityManager
+      //     .getRepository(Group)
+      //     .merge(group, { users: filteredUsers });
+      //   results = await transactionalEntityManager
+      //     .getRepository(Group)
+      //     .save(mergeResult);
+      // }
+      const results = await transactionalEntityManager
+        .createQueryBuilder()
+        .relation(Group, 'users')
+        .of(groupId)
+        .add(userIds);
       return results;
     }
   );
-  return res;
+  return result;
 }
