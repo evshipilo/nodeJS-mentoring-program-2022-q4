@@ -10,12 +10,12 @@ export const checkTokenMiddleware = function (
 
   if (token) {
     const secret = process.env.SECRET as string;
-    jwt.verify(token, secret, function (err) {
+    jwt.verify(token, secret, function (err, decoded) {
       if (err) {
-        return res.status(401).json({ message: 'Failed jwt token' });
+        res.status(403).json({ message: 'Failed jwt token' });
       } else {
-        return next();
+        next();
       }
     });
-  }
+  }else {res.status(401).json({ message: 'No jwt token provided' });}
 };

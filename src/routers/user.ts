@@ -135,23 +135,24 @@ user.get(
   }
 );
 
-user.post('/authenticate', userBodyCredentialsValidator, function () {
+user.post(
+  '/user/authenticate',
+  userBodyCredentialsValidator,
   async (
     req: ValidatedRequest<GetUserByCredentialsBodySchema>,
     res: Response,
     next: NextFunction
   ) => {
-    console.log('>>>>');
-    
+
     try {
       const { login, password } = req.body;
 
       const result = await userService.getUserByCredentials(login, password);
 
       if (result instanceof User) {
-        const payload = { sub: result.id };
+        const payload = { sub: 'api access', userId: result.id };
         const secret = process.env.SECRET as string;
-        const token = jwt.sign(payload, secret, { expiresIn: '10000ms' });
+        const token = jwt.sign(payload, secret, { expiresIn: '30000ms' });
         res.status(200).json({ token });
       } else {
         res.status(401).json({ message: 'Bad Username/Passsword combination' });
@@ -159,7 +160,7 @@ user.post('/authenticate', userBodyCredentialsValidator, function () {
     } catch (e) {
       next(e);
     }
-  };
-});
+  }
+);
 
 export default user;

@@ -71,15 +71,17 @@ export async function getUsers(substring?: string, limit?: number) {
 }
 
 export async function getUserByCredentials(login: string, password: string) {
+  
   const result = await AppDataSource.transaction(
     async (transactionalEntityManager) => {
-      const results =  await transactionalEntityManager
+      const user =  await transactionalEntityManager
             .getRepository(User)
             .createQueryBuilder('user')
-            .where({login, password, "is_deleted": false})
-            .getMany()
-
-      return results;
+            .where('user.login = :login', {login})
+            .andWhere('user.password = :password', {password})
+            .andWhere('user.is_deleted = :is_deleted', {is_deleted: false})
+            .getOne()
+      return user;
     }
   );
   return result;
