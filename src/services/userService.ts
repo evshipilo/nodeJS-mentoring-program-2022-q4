@@ -25,4 +25,8 @@ export class UserService {
   public async getUsers(substring?: string, limit?: number) {
     return await Repository.getUsers(substring, limit);
   }
+
+  public async getUserByCredentials(login: string, password: string) {
+    return await Repository.getUserByCredentials(login, password);
+  }
 }

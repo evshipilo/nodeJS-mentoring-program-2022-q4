@@ -14,10 +14,10 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @Column({ nullable: false, type: 'text' })
+  @Column({ nullable: false, type: 'text', unique: true })
   login: string;
 
-  @Column({ nullable: false, type: 'text' })
+  @Column({ nullable: false, type: 'text', unique: true })
   password: string;
 
   @Column({ nullable: false, type: 'int' })

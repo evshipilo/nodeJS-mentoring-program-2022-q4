@@ -5,39 +5,53 @@ import {
   userBodyValidatorOnUpdate,
   paramsIdValidator,
   userQuerySubstringLimitValidator,
+  userBodyCredentialsValidator,
 } from '../validation/validators';
 import { User } from '../models/typeORMModels';
 import { ValidatedRequest } from 'express-joi-validation';
 import {
   CreateUserBodySchema,
+  GetUserByCredentialsBodySchema,
   ParamsIDSchema,
   QuerySubstringLimitSchema,
   UpdateUserBodySchema,
 } from '../validation/types';
 import { methodLoggerMiddleware } from '../middlewares/methodLoggerMiddleware';
+import * as jwt from 'jsonwebtoken';
+import { LoginError } from '../customErrors';
 
 const user = express.Router();
 const userService = new UserService();
 
 user.post(
   '/user',
-  userBodyValidatorOnCreate, methodLoggerMiddleware,
-  async (req: ValidatedRequest<CreateUserBodySchema>, res: Response, next: NextFunction) => {
+  userBodyValidatorOnCreate,
+  methodLoggerMiddleware,
+  async (
+    req: ValidatedRequest<CreateUserBodySchema>,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const user: User = { ...req.body };
       const result = await userService.createUser(user);
       res.status(200).json({ createdUser: result });
     } catch (e) {
       // pass error to errorHandler
-      next(e)
+      next(e);
     }
   }
 );
 
 user.get(
   '/user/:id',
-  paramsIdValidator, methodLoggerMiddleware,
-  async (req: ValidatedRequest<ParamsIDSchema>, res: Response, next: NextFunction) => {
+  paramsIdValidator,
+  methodLoggerMiddleware,
+  async (
+    req: ValidatedRequest<ParamsIDSchema>,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const { id } = req.params;
       const result = await userService.getUserById(id);
@@ -45,7 +59,7 @@ user.get(
         ? res.status(200).json({ user: result })
         : res.status(404).json({ message: `no users with id ${id}` });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 );
@@ -57,7 +71,8 @@ user.put(
   methodLoggerMiddleware,
   async (
     req: ValidatedRequest<ParamsIDSchema & UpdateUserBodySchema>,
-    res: Response, next: NextFunction
+    res: Response,
+    next: NextFunction
   ) => {
     try {
       const { id } = req.params;
@@ -66,7 +81,7 @@ user.put(
         ? res.status(200).json({ updatedUser: result })
         : res.status(404).json({ message: `no users with id ${id}` });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 );
@@ -75,7 +90,11 @@ user.delete(
   '/user/:id',
   paramsIdValidator,
   methodLoggerMiddleware,
-  async (req: ValidatedRequest<ParamsIDSchema>, res: Response, next: NextFunction) => {
+  async (
+    req: ValidatedRequest<ParamsIDSchema>,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const { id } = req.params;
       const result = await userService.deleteUser(id);
@@ -85,7 +104,7 @@ user.delete(
             .json({ message: `user with id ${id} marked as deleted` })
         : res.status(404).json({ message: `no users with id ${id}` });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 );
@@ -94,7 +113,11 @@ user.get(
   '/users',
   userQuerySubstringLimitValidator,
   methodLoggerMiddleware,
-  async (req: ValidatedRequest<QuerySubstringLimitSchema>, res: Response, next: NextFunction) => {
+  async (
+    req: ValidatedRequest<QuerySubstringLimitSchema>,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const { loginsubstring } = req.query;
       const { limit } = req.query;
@@ -102,14 +125,37 @@ user.get(
       const result = await userService.getUsers(loginsubstring, limit);
       res.status(200).json({ users: result });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 );
 
-user.get('/error', methodLoggerMiddleware, function() {
-  //throw new Error("I AM UNHANDLED EXEPTION>>>>>");
-  //new Promise((res,rej)=>{rej('I AM UNHANDLED PROMISE REJECTION>>>>>')});
-});
+user.post(
+  '/user/login',
+  userBodyCredentialsValidator,
+  async (
+    req: ValidatedRequest<GetUserByCredentialsBodySchema>,
+    res: Response,
+    next: NextFunction
+  ) => {
+
+    try {
+      const { login, password } = req.body;
+
+      const result = await userService.getUserByCredentials(login, password);
+
+      if (result instanceof User) {
+        const payload = { sub: 'api access', userId: result.id };
+        const secret = process.env.SECRET as string;
+        const token = jwt.sign(payload, secret, { expiresIn: `${process.env.EXPIRESIN}ms` });
+        res.status(200).json({ token });
+      } else {
+        throw new LoginError('Bad Username/Passsword combination')
+      }
+    } catch (e) {
+      next(e);
+    }
+  }
+);
 
 export default user;

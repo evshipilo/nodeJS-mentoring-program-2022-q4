@@ -51,3 +51,10 @@ export interface CreateGroupRelationsBodySchema extends ValidatedRequestSchema {
     usersId: string[];
   };
 }
+
+export interface GetUserByCredentialsBodySchema extends ValidatedRequestSchema {
+  [ContainerTypes.Body]: {
+    login: string;
+    password: string;
+  };
+}

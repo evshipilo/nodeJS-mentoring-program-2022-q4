@@ -19,4 +19,25 @@ export class FindGroupError extends Error {
   }
 }
 
+export class LoginError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'LoginError';
+  }
+}
+
+export class JWTValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'JWTValidationError';
+  }
+}
+
+export class NoJWTError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'NoJWTError';
+  }
+}
+
 
