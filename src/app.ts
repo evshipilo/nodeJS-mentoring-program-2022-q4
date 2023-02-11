@@ -8,6 +8,8 @@ import { errorHandlerMiddleware } from './middlewares/errorHandlerMiddleware';
 import {processListener} from './process'
 import { loggerMiddleware } from './middlewares/loggerMiddleware';
 import { logger } from './logger/winstonLogger';
+import { checkTokenMiddleware } from './middlewares/checkTokenMiddleware';
+
 const app = express();
 dotenv.config()
 
@@ -16,7 +18,7 @@ app.use(cors());
 // Transforms the raw string of req.body into json
 app.use(express.json());
 //load common middlewares
-app.use(loggerMiddleware);
+app.use(loggerMiddleware, checkTokenMiddleware);
 // Load API routes
 app.use(user, group);
 

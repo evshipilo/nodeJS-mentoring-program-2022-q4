@@ -18,7 +18,7 @@ import {
 } from '../validation/types';
 import { methodLoggerMiddleware } from '../middlewares/methodLoggerMiddleware';
 import * as jwt from 'jsonwebtoken';
-import { checkTokenMiddleware } from '../middlewares/checkTokenMiddleware';
+import { LoginError } from '../customErrors';
 
 const user = express.Router();
 const userService = new UserService();
@@ -27,7 +27,6 @@ user.post(
   '/user',
   userBodyValidatorOnCreate,
   methodLoggerMiddleware,
-  checkTokenMiddleware,
   async (
     req: ValidatedRequest<CreateUserBodySchema>,
     res: Response,
@@ -48,7 +47,6 @@ user.get(
   '/user/:id',
   paramsIdValidator,
   methodLoggerMiddleware,
-  checkTokenMiddleware,
   async (
     req: ValidatedRequest<ParamsIDSchema>,
     res: Response,
@@ -71,7 +69,6 @@ user.put(
   userBodyValidatorOnUpdate,
   paramsIdValidator,
   methodLoggerMiddleware,
-  checkTokenMiddleware,
   async (
     req: ValidatedRequest<ParamsIDSchema & UpdateUserBodySchema>,
     res: Response,
@@ -93,7 +90,6 @@ user.delete(
   '/user/:id',
   paramsIdValidator,
   methodLoggerMiddleware,
-  checkTokenMiddleware,
   async (
     req: ValidatedRequest<ParamsIDSchema>,
     res: Response,
@@ -117,7 +113,6 @@ user.get(
   '/users',
   userQuerySubstringLimitValidator,
   methodLoggerMiddleware,
-  checkTokenMiddleware,
   async (
     req: ValidatedRequest<QuerySubstringLimitSchema>,
     res: Response,
@@ -136,7 +131,7 @@ user.get(
 );
 
 user.post(
-  '/user/authenticate',
+  '/user/login',
   userBodyCredentialsValidator,
   async (
     req: ValidatedRequest<GetUserByCredentialsBodySchema>,
@@ -152,10 +147,10 @@ user.post(
       if (result instanceof User) {
         const payload = { sub: 'api access', userId: result.id };
         const secret = process.env.SECRET as string;
-        const token = jwt.sign(payload, secret, { expiresIn: '30000ms' });
+        const token = jwt.sign(payload, secret, { expiresIn: `${process.env.EXPIRESIN}ms` });
         res.status(200).json({ token });
       } else {
-        res.status(401).json({ message: 'Bad Username/Passsword combination' });
+        throw new LoginError('Bad Username/Passsword combination')
       }
     } catch (e) {
       next(e);

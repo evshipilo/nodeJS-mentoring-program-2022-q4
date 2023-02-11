@@ -3,6 +3,9 @@ import {
   DBInitializationError,
   FindGroupError,
   FindUserError,
+  JWTValidationError,
+  LoginError,
+  NoJWTError,
 } from '../customErrors';
 import { logger } from '../logger/winstonLogger';
 
@@ -24,7 +27,13 @@ export const errorHandlerMiddleware = function (
   if (err instanceof DBInitializationError) {
       res.status(500).send(err.message);
       process.exit(1);
-    } else if ((err instanceof FindUserError) || (err instanceof FindGroupError)) {
+    }else if((err instanceof LoginError) || (err instanceof JWTValidationError)){
+      res.status(401).send(err.message);
+    }
+    else if(err instanceof NoJWTError){
+      res.status(403).send(err.message);
+    }
+    else if ((err instanceof FindUserError) || (err instanceof FindGroupError)) {
       res.status(404).send(err.message);
     } else {
       res.status(500).send(err.message);

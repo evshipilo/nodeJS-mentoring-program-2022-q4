@@ -1,21 +1,27 @@
 import { NextFunction, Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
+import { JWTValidationError, NoJWTError } from '../customErrors';
 
 export const checkTokenMiddleware = function (
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const token = req.headers['jwt-access-token'] as string;
+  console.log(req.path)
+  if(req.path === '/user/login') return next()
+
+  const token = typeof req.headers['jwt-access-token'] === 'string' ? req.headers['jwt-access-token'] : undefined ;
 
   if (token) {
     const secret = process.env.SECRET as string;
     jwt.verify(token, secret, function (err, decoded) {
       if (err) {
-        res.status(403).json({ message: 'Failed jwt token' });
+        throw new JWTValidationError('Failed jwt token')
       } else {
         next();
       }
     });
-  }else {res.status(401).json({ message: 'No jwt token provided' });}
+  }else {
+    throw new NoJWTError('No jwt token provided')
+  }
 };
