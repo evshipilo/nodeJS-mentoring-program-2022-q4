@@ -1,20 +1,10 @@
 import {
-  DBInitializationError,
   FindGroupError,
   FindUserError,
 } from '../customErrors';
-import { logger } from '../logger/winstonLogger';
 import { Group, User } from '../models/typeORMModels';
 import { GroupUpdates, UserUpdates } from '../types';
 import AppDataSource from './dbConfig';
-
-AppDataSource.initialize()
-  .then(() => {
-    logger.info('Data base initialized');
-  })
-  .catch((e) => {
-    throw new DBInitializationError('initialize faled');
-  });
 
 export async function createUser(newUser: User) {
   const result = await AppDataSource.transaction(

@@ -1,5 +1,7 @@
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
+import { DBInitializationError } from '../customErrors';
+import { logger } from '../logger/winstonLogger';
 import { myMigration1673944710450 } from '../migrations/1673944710450-my-migration';
 import { Group, User} from '../models/typeORMModels';
 dotenv.config();
@@ -22,6 +24,14 @@ const dataSource = new DataSource({
   subscribers: [],
   migrations: [myMigration1673944710450],
 });
+
+dataSource.initialize()
+  .then(() => {
+    logger.info('Data base initialized');
+  })
+  .catch(() => {
+    throw new DBInitializationError('initialize faled');
+  });
 
 // npm run typeorm -- migration:generate ./src/migrations/my-migration
 // npm run typeorm -- migration:run

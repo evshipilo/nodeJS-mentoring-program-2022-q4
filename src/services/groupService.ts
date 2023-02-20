@@ -2,7 +2,7 @@ import * as Repository from '../data-access/typeORMDataAccess';
 import { Group } from '../models/typeORMModels';
 import { GroupUpdates } from '../types';
 
-export class GroupService {
+export default class GroupService {
   public async createGroup(group: Group) {
     const result = await Repository.createGroup(group);
     return result;
