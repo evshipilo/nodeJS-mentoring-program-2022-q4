@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "app": "nodemon src/app.ts",
+    "app": "nodemon src/index.ts",
     "lint": "eslint . --ext .ts",
     "typeorm": "typeorm-ts-node-esm -d ./src/data-access/dbConfig.ts",
     "test": "jest"

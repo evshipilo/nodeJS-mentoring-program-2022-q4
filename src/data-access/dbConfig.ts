@@ -30,7 +30,7 @@ dataSource.initialize()
     logger.info('Data base initialized');
   })
   .catch(() => {
-    throw new DBInitializationError('initialize faled');
+    throw new DBInitializationError('initialization faled');
   });
 
 // npm run typeorm -- migration:generate ./src/migrations/my-migration

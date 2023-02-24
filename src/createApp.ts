@@ -3,9 +3,7 @@ import 'reflect-metadata';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import { errorHandlerMiddleware } from './middlewares/errorHandlerMiddleware';
-import { processListener } from './process';
 import { loggerMiddleware } from './middlewares/loggerMiddleware';
-import { logger } from './logger/winstonLogger';
 import { checkTokenMiddleware } from './middlewares/checkTokenMiddleware';
 import createGroupRouter from './routers/group';
 import createUserRouter from './routers/user';
@@ -28,13 +26,6 @@ export default function createApplication(userService:UserService, groupService:
   //load error handler
   app.use(errorHandlerMiddleware);
 
-  const server= app.listen(process.env.PORT, () => {
-    logger.info(`App listening at http://localhost:${process.env.PORT}`);
-  });
-
-  //handle unhandled errors
-  processListener();
-
-  return {app, server}
+  return app
 }
 

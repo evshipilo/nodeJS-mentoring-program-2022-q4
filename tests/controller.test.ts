@@ -83,15 +83,12 @@ async function getValidJWT() {
   return response.body.token;
 }
 
-const { app: application, server } = createApplication(
+const application = createApplication(
   mockUserService,
   mockGroupService
 );
 
 describe('CONTROLLER: ', () => {
-  afterAll(() => {
-    server.close();
-  });
 
   describe('User Controller: ', () => {
     describe('POST /user/login', () => {
