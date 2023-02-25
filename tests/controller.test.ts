@@ -67,7 +67,21 @@ const validSubstring = 'log';
 const notValidSubstring = 'logaaaaaaaaaaa';
 const validLimit = 3;
 const notValidLimit = 'a';
-
+const loginValidationErrorMessage =
+  'Error validating request body. "login" length must be at least 3 characters long.';
+const notValidCredentialsMessage = 'Bad Username/Password combination';
+const notValidJWTMessage = 'Failed jwt token';
+const noJWTMessage = 'No jwt token provided'
+const notValidUserIDMessage = 'Error validating request params. "id" length must be at least 36 characters long.'
+const notValidGroupIDMessage = 'Error validating request params. "id" length must be at least 36 characters long.'
+const successfullDeleteMessage = `group with id ${validGroupId} deleted`
+const noUserMessage  = 'no user'
+const noGroupMessage  = 'no group'
+const notValidLimitMessage  = 'Error validating request query. "limit" must be a number.'
+const notValidSubstringMessage = 'Error validating request query. "loginsubstring" length must be less than or equal to 10 characters long.'
+const notValidGroupNameMessage = 'Error validating request body. "name" length must be at least 3 characters long.'
+const notValidUsersMessage = 'Error validating request body. "usersId[0]" length must be at least 36 characters long. "usersId[1]" length must be at least 36 characters long.'
+const createdGroupRelationsName = 'grpup1'
 const validGroupData = {
   name: validGroupName,
   permissions: validGroupPermissions,
@@ -83,13 +97,9 @@ async function getValidJWT() {
   return response.body.token;
 }
 
-const application = createApplication(
-  mockUserService,
-  mockGroupService
-);
+const application = createApplication(mockUserService, mockGroupService);
 
 describe('CONTROLLER: ', () => {
-
   describe('User Controller: ', () => {
     describe('POST /user/login', () => {
       beforeEach(() => {
@@ -116,6 +126,7 @@ describe('CONTROLLER: ', () => {
             .send(body);
           expect(mockUserService.getUserByCredentials).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(loginValidationErrorMessage);
         });
       });
       describe('when user not found by credentials', () => {
@@ -127,6 +138,7 @@ describe('CONTROLLER: ', () => {
             .post('/user/login')
             .send(body);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidCredentialsMessage);
         });
       });
       describe('when user found by credentials', () => {
@@ -161,6 +173,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', notValidJWT)
             .send(body);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
@@ -168,6 +181,7 @@ describe('CONTROLLER: ', () => {
           const body = validUserData;
           const response = await request(application).post('/user').send(body);
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when user data valid', () => {
@@ -209,6 +223,7 @@ describe('CONTROLLER: ', () => {
             .send(body);
           expect(mockUserService.createUser).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(loginValidationErrorMessage)
         });
       });
     });
@@ -223,6 +238,7 @@ describe('CONTROLLER: ', () => {
             .get(`/user/${validUserId}`)
             .set('jwt-access-token', notValidJWT);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
@@ -231,6 +247,7 @@ describe('CONTROLLER: ', () => {
             `/user/${validUserId}`
           );
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when user id not valid', () => {
@@ -240,6 +257,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockUserService.getUserById).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidUserIDMessage)
         });
       });
       describe('when user not found', () => {
@@ -252,6 +270,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockUserService.getUserById).toBeCalledWith(validUserId);
           expect(response.status).toBe(404);
+          expect(response.text).toBe(noUserMessage)
         });
       });
       describe('when user found', () => {
@@ -285,6 +304,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', notValidJWT)
             .send(validUserData);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
@@ -293,6 +313,7 @@ describe('CONTROLLER: ', () => {
             .put(`/user/${validUserId}`)
             .send(validUserData);
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when user id not valid', () => {
@@ -303,6 +324,7 @@ describe('CONTROLLER: ', () => {
             .send(validUserData);
           expect(mockUserService.updateUser).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidUserIDMessage)
         });
       });
       describe('when user update data not valid', () => {
@@ -313,6 +335,7 @@ describe('CONTROLLER: ', () => {
             .send({ ...validUserData, login: notValidLogin });
           expect(mockUserService.updateUser).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(loginValidationErrorMessage)
         });
       });
       describe('when user not found', () => {
@@ -329,6 +352,7 @@ describe('CONTROLLER: ', () => {
             validUserData
           );
           expect(response.status).toBe(404);
+          expect(response.text).toBe(noUserMessage)
         });
       });
       describe('when user found', () => {
@@ -369,6 +393,7 @@ describe('CONTROLLER: ', () => {
             .delete(`/user/${validUserId}`)
             .set('jwt-access-token', notValidJWT);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
@@ -377,6 +402,7 @@ describe('CONTROLLER: ', () => {
             `/user/${validUserId}`
           );
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when user id not valid', () => {
@@ -386,6 +412,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockUserService.deleteUser).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidUserIDMessage)
         });
       });
       describe('when user not found', () => {
@@ -398,6 +425,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockUserService.deleteUser).toBeCalledWith(validUserId);
           expect(response.status).toBe(404);
+          expect(response.text).toBe(noUserMessage)
         });
       });
       describe('when user found', () => {
@@ -432,12 +460,14 @@ describe('CONTROLLER: ', () => {
             .get(`/users`)
             .set('jwt-access-token', notValidJWT);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
         test('should respond with 403 ', async () => {
           const response = await request(application).get(`/users`);
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when limit param not valid', () => {
@@ -447,6 +477,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockUserService.getUsers).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidLimitMessage)
         });
       });
       describe('when loginsubstring param not valid', () => {
@@ -456,6 +487,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockUserService.getUsers).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidSubstringMessage)
         });
       });
       describe('when request valid', () => {
@@ -498,6 +530,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', notValidJWT)
             .send(body);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
@@ -505,6 +538,7 @@ describe('CONTROLLER: ', () => {
           const body = validGroupData;
           const response = await request(application).post('/group').send(body);
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when group data valid', () => {
@@ -546,6 +580,7 @@ describe('CONTROLLER: ', () => {
             .send(body);
           expect(mockGroupService.createGroup).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidGroupNameMessage)
         });
       });
     });
@@ -560,6 +595,7 @@ describe('CONTROLLER: ', () => {
             .get(`/group/${validGroupId}`)
             .set('jwt-access-token', notValidJWT);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
@@ -568,6 +604,7 @@ describe('CONTROLLER: ', () => {
             `/group/${validGroupId}`
           );
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when group id not valid', () => {
@@ -577,6 +614,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockGroupService.getGroupById).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidGroupIDMessage)
         });
       });
       describe('when group not found', () => {
@@ -589,6 +627,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockGroupService.getGroupById).toBeCalledWith(validGroupId);
           expect(response.status).toBe(404);
+          expect(response.text).toBe(noGroupMessage)
         });
       });
       describe('when group found', () => {
@@ -621,12 +660,14 @@ describe('CONTROLLER: ', () => {
             .get(`/groups`)
             .set('jwt-access-token', notValidJWT);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
         test('should respond with 403 ', async () => {
           const response = await request(application).get(`/groups`);
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when groups found', () => {
@@ -657,6 +698,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockGroupService.getGroups).toBeCalledWith();
           expect(response.status).toBe(404);
+          expect(response.text).toBe(noGroupMessage)
         });
       });
     });
@@ -672,6 +714,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', notValidJWT)
             .send(validGroupData);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
@@ -680,6 +723,7 @@ describe('CONTROLLER: ', () => {
             .put(`/group/${validGroupId}`)
             .send(validGroupData);
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when group id not valid', () => {
@@ -690,6 +734,7 @@ describe('CONTROLLER: ', () => {
             .send(validGroupData);
           expect(mockGroupService.updateGroup).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidGroupIDMessage)
         });
       });
       describe('when group update data not valid', () => {
@@ -700,6 +745,7 @@ describe('CONTROLLER: ', () => {
             .send({ ...validGroupData, name: notValidGroupName });
           expect(mockGroupService.updateGroup).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidGroupNameMessage)
         });
       });
       describe('when group not found', () => {
@@ -716,6 +762,7 @@ describe('CONTROLLER: ', () => {
             validGroupData
           );
           expect(response.status).toBe(404);
+          expect(response.text).toBe(noGroupMessage)
         });
       });
       describe('when group found', () => {
@@ -756,6 +803,7 @@ describe('CONTROLLER: ', () => {
             .delete(`/group/${validGroupId}`)
             .set('jwt-access-token', notValidJWT);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
@@ -764,6 +812,7 @@ describe('CONTROLLER: ', () => {
             `/group/${validGroupId}`
           );
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when group id not valid', () => {
@@ -773,6 +822,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockGroupService.deleteGroup).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidGroupIDMessage)
         });
       });
       describe('when group not found', () => {
@@ -785,6 +835,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockGroupService.deleteGroup).toBeCalledWith(validGroupId);
           expect(response.status).toBe(404);
+          expect(response.text).toBe(noGroupMessage)
         });
       });
       describe('when group found', () => {
@@ -795,6 +846,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockGroupService.deleteGroup).toBeCalledWith(validGroupId);
           expect(response.status).toBe(200);
+          expect(response.body.message).toBe(successfullDeleteMessage)
         });
       });
     });
@@ -809,6 +861,7 @@ describe('CONTROLLER: ', () => {
             .post(`/group/${validGroupId}/addusers`)
             .set('jwt-access-token', notValidJWT);
           expect(response.status).toBe(401);
+          expect(response.text).toBe(notValidJWTMessage)
         });
       });
       describe('when no jwt', () => {
@@ -817,6 +870,7 @@ describe('CONTROLLER: ', () => {
             `/group/${validGroupId}/addusers`
           );
           expect(response.status).toBe(403);
+          expect(response.text).toBe(noJWTMessage)
         });
       });
       describe('when group id not valid', () => {
@@ -826,6 +880,7 @@ describe('CONTROLLER: ', () => {
             .set('jwt-access-token', await getValidJWT());
           expect(mockGroupService.addUsersToGroup).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidGroupIDMessage)
         });
       });
       describe('when user ids not valid', () => {
@@ -833,9 +888,10 @@ describe('CONTROLLER: ', () => {
           const response = await request(application)
             .post(`/group/${validGroupId}/addusers`)
             .set('jwt-access-token', await getValidJWT())
-            .send({usersId: notValidUserIds});
+            .send({ usersId: notValidUserIds });
           expect(mockGroupService.addUsersToGroup).not.toBeCalled();
           expect(response.status).toBe(400);
+          expect(response.text).toBe(notValidUsersMessage)
         });
       });
       describe('when request valid', () => {
@@ -844,12 +900,13 @@ describe('CONTROLLER: ', () => {
           const response = await request(application)
             .post(`/group/${validGroupId}/addusers`)
             .set('jwt-access-token', await getValidJWT())
-            .send({usersId: validUserIds});
+            .send({ usersId: validUserIds });
           expect(mockGroupService.addUsersToGroup).toBeCalledWith(
             validGroupId,
             validUserIds
           );
           expect(response.status).toBe(200);
+          expect(response.body.createdGroupRelations.name).toBe(createdGroupRelationsName)
         });
       });
     });
