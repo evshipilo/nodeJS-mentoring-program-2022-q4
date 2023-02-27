@@ -2,7 +2,7 @@ import * as Repository from '../data-access/typeORMDataAccess';
 import { User } from '../models/typeORMModels';
 import { UserUpdates } from '../types';
 
-export class UserService {
+export default class UserService {
   public async createUser(user: User) {
     return await Repository.createUser(user);
   }

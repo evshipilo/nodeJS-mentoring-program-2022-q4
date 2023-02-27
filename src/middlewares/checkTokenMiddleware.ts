@@ -7,7 +7,7 @@ export const checkTokenMiddleware = function (
   res: Response,
   next: NextFunction
 ) {
-  console.log(req.path)
+
   if(req.path === '/user/login') return next()
 
   const token = typeof req.headers['jwt-access-token'] === 'string' ? req.headers['jwt-access-token'] : undefined ;
